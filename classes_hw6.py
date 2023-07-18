@@ -102,9 +102,8 @@ class Record:
         birthday = self.birthday.value.replace(year=current_date.year)
         quantity_days = (birthday - current_date).days
         return quantity_days
-# если число возвращается положительное то др еще не наступил, если отрицательное то уже прошел
+        # если число возвращается положительное то др еще не наступил, если отрицательное то уже прошел
     
-
 
     def __str__(self) -> str:
         return f'{self.phone_list}'
