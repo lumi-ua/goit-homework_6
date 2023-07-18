@@ -2,47 +2,73 @@ from collections import UserDict
 from datetime import datetime, timedelta
 
 class Field:
+
     def __init__(self, value) -> None:
-        self.value = value
-    # @property
-    # def value(self):
-    #     return self.value
+        self._value = value
 
-    # @value.setter   # проверка на корректность номера телефона
-    # def value(self, value):
-    #     if isinstance(Phone(value, int)) and len(Phone(value)) == 12:
-    #         self.value = value
-    #     else:
-    #         print(f"{value} is an invalid mobile number")
-    
-    # @value.setter # проверка на корректность дня рождения
-    # def value(self, value):    
-    #     value = datetime.strptime(Birthday(value, "%d.%m.%Y"))
-    #     current_year = datetime.now().year
-    #     if value.year > current_year or value.year < current_year - 120:
-    #         raise ValueError("Incorrect data")
+    @property
+    def value(self):
+        return self._value
 
-    #     if value > datetime.now():
-    #         raise ValueError("Incorrect data")
-    #     else:
-    #         return value
+    @value.setter
+    def value(self, var):
+        self._value = var
     
     def __str__(self) -> str:
-        return self.value
+        return self._value
     
     def __repr__(self) -> str:
         return str(self)
      
 
 class Name(Field):
-    pass
 
-    
+    @property
+    def value(self):
+        return super().value
+
+    @value.setter
+    def value(self, var):
+        super(Name, self.__class__).value.fset(self, var)
+
+
 class Phone(Field):
-    pass
+
+    @property
+    def value(self):
+        return super().value
+
+    @value.setter
+    def value(self, var):
+        if (len(var) == 12) and var.isnumeric():
+            Field.value = var
+        else:
+            raise ValueError(f"{var} is an invalid mobile number")
+
 
 class Birthday(Field):
-    pass
+
+    def __init__(self, var) -> None:
+        self.value = var;
+
+    @property
+    def value(self):
+        return Field.value
+
+    @value.setter # проверка на корректность дня рождения
+    def value(self, var):
+        dtv = datetime.strptime(var, "%d.%m.%Y")
+        current_year = datetime.now().year
+        if dtv.year > current_year or dtv.year < current_year - 120:
+            raise ValueError("Invalid birthday range!")
+        else:
+            Field.value = dtv
+
+        if dtv > datetime.now():
+            raise ValueError("Invalid birthday!")
+        else:
+            Field.value = dtv
+
 
 class Record:
 
@@ -51,9 +77,7 @@ class Record:
         self.phone_list = []    #list[Phone()]
         if phone: 
             self.phone_list.append(phone)
-        if birthday:  
-            self.birthday = datetime.strptime(birthday, "%d.%m.%Y").date()
-
+        self.birthday = birthday
 
     def add_phone(self, phone: Phone):
         self.phone_list.append(phone)
@@ -63,8 +87,8 @@ class Record:
         for idx, item in enumerate(self.phone_list):
             if phone_from.number == item.number:
                 self.phone_list[idx] = phone_to
-        #         return f"old phone {phone_from} change to {phone_to}"
-        # return f"{phone_from} not present in phones of contact {self.name}"
+                return f"old phone {phone_from} change to {phone_to}"
+        return f"{phone_from} not present in phones of contact {self.name}"
     
     def delete_phone(self, number: str):
         # iterate from end to begin (reverse iteration)
@@ -75,8 +99,8 @@ class Record:
     def days_to_birthday(self):
         # возвращает количество дней до следующего дня рождения.
         current_date = datetime.now().date()
-        self.birthday = self.birthday.replace(year=current_date.year)     
-        quantity_days = (current_date - self.birthday).days
+        birthday = self.birthday.value.replace(year=current_date.year)
+        quantity_days = (birthday - current_date).days
         return quantity_days
 # если число возвращается положительное то др еще не наступил, если отрицательное то уже прошел
     
@@ -117,7 +141,9 @@ class AddressBook(UserDict):
         if self.data.get(record.name.value):
             rec = self.data[record.name.value]
             rec.phone_list.extend(record.phone_list)
-            rec.birthday.extend(record.birthday) # под вопросом правильность написания
+            
+            if record.birthday: rec.birthday = record.birthday
+            #rec.birthday.extend(record.birthday) # под вопросом правильность написания
         else:
             self.data[record.name.value] = record
 
@@ -132,12 +158,11 @@ class AddressBook(UserDict):
         #    return self.data[name_str]
         return None
 
-# метод iterator, возвращает генератор по записям AddressBook и за одну итерацию 
-# возвращает представление для N записей.
     def __iter__(self):             
         return self
-
     
+    # метод iterator, возвращает генератор по записям AddressBook и за одну итерацию 
+    # возвращает представление для N записей.
     def iterator(self):
         return AddressBookIterator(entries = self.data, page_size = 10)
 
