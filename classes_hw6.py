@@ -23,16 +23,13 @@ class Field:
 
 class Name(Field):
 
-    @property
-    def value(self):
-        return super().value
-
-    @value.setter
-    def value(self, var):
-        super(Name, self.__class__).value.fset(self, var)
-
+    def __init__(self, value) -> None:
+        super().__init__(value)
 
 class Phone(Field):
+
+    def __init__(self, var) -> None:
+        self.value = var
 
     @property
     def value(self):
@@ -41,7 +38,8 @@ class Phone(Field):
     @value.setter
     def value(self, var):
         if (len(var) == 12) and var.isnumeric():
-            Field.value = var
+            #Field.value = var
+            super(Phone, self.__class__).value.fset(self, var)
         else:
             raise ValueError(f"{var} is an invalid mobile number")
 
@@ -49,25 +47,28 @@ class Phone(Field):
 class Birthday(Field):
 
     def __init__(self, var) -> None:
-        self.value = var;
+        self.value = var
 
     @property
     def value(self):
-        return Field.value
+        #return Field.value
+        return super().value
 
-    @value.setter # проверка на корректность дня рождения
+    @value.setter
     def value(self, var):
         dtv = datetime.strptime(var, "%d.%m.%Y")
         current_year = datetime.now().year
         if dtv.year > current_year or dtv.year < current_year - 120:
             raise ValueError("Invalid birthday range!")
         else:
-            Field.value = dtv
+            #Field.value = dtv
+            super(Birthday, self.__class__).value.fset(self, dtv)
 
         if dtv > datetime.now():
             raise ValueError("Invalid birthday!")
         else:
-            Field.value = dtv
+            #Field.value = dtv
+            super(Birthday, self.__class__).value.fset(self, dtv)
 
 
 class Record:
@@ -96,13 +97,13 @@ class Record:
             if item.number == number:
                 self.phone_list.remove(item)
     
-    def days_to_birthday(self):
+    def days_to_birthday(self) -> int:
         # возвращает количество дней до следующего дня рождения.
+        # если положительное то др еще не наступил, если отрицательное то уже прошел
         current_date = datetime.now().date()
-        birthday = self.birthday.value.replace(year=current_date.year)
+        birthday = self.birthday.value.replace(year=current_date.year).date()
         quantity_days = (birthday - current_date).days
         return quantity_days
-        # если число возвращается положительное то др еще не наступил, если отрицательное то уже прошел
     
 
     def __str__(self) -> str:
@@ -113,6 +114,7 @@ class Record:
 
 
 class AddressBookIterator:
+
     def __init__(self, entries, page_size=10):
         self.entries = entries
         self.page_size = page_size
@@ -146,15 +148,9 @@ class AddressBook(UserDict):
         else:
             self.data[record.name.value] = record
 
-    # -> return Record(name)
-    def search_user(self, name_str: str):
-        name = Name(name_str)
-        if self.data.get(name.value):
-            return self.data[name.value]
-
-        # the same:
-        #if self.data.get(name_str):
-        #    return self.data[name_str]
+    def search_user(self, name: str) -> Record:
+        if self.data.get(name):
+            return self.data[name]
         return None
 
     def __iter__(self):             

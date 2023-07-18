@@ -56,7 +56,7 @@ def phone(*args):
     name = args[0]
     record = address_book.search_user(name)
     if record:
-        result = name + ": " + ", ".join([phone.value for phone in record.phone_list]) 
+        result = name + ": " + ", ".join([phone.value for phone in record.phone_list])
         if record.birthday:
             result += "\ndays to birthday:" + str(record.days_to_birthday())
         return result
@@ -87,12 +87,30 @@ COMMANDS = {
     good_bye: ("exit", "close", "good bye", "end")
 }
 
-def parser(text:str):
-    for cmd, kwds in COMMANDS.items():
-        for kwd in kwds:
-            if text.lower().startswith(kwd):                
-                data = text[len(kwd):].strip().split()
-                return cmd, data 
+#def parser(text:str):
+#    for cmd, kwds in COMMANDS.items():
+#        for kwd in kwds:
+#            if text.lower().startswith(kwd):                
+#                data = text[len(kwd):].strip().split()
+#                return cmd, data 
+#    return no_command, None
+
+def parser(text: str): #-> tuple([callable, tuple([str]|None)]):
+    if text.lower().startswith("add"):
+        return add, text.lower().replace("add", "").strip().split()
+    if text.lower().startswith("hello"):
+        return hello, None
+    if text.lower().startswith("change"):
+        cmd = text.lower().replace("change", "")
+        return change, cmd.strip().split()
+    if text.lower().startswith("phone"):
+        cmd = text.lower().replace("phone", "")
+        return phone, cmd.strip().split()
+    if text.lower().startswith("show all"):
+        return show_all, None
+    if text.lower().startswith("good bye") or text.lower().startswith("exit") or text.lower().startswith("close"):
+        return good_bye, None 
+
     return no_command, None
 
 def main():
@@ -104,8 +122,10 @@ def main():
             result = command(*args)
         else:
             result = command()
-        print(result)
+        
+        if result: print(result)
 
 ###############################################
 if __name__ == "__main__":
     main()
+   
