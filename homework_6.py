@@ -5,7 +5,6 @@ address_book = AddressBook()
 
 def input_error(func):
     def wrapper(*args, **kwargs):
-        argc = len(args)
         result = None
         try:
             result = func(*args, **kwargs) 
@@ -55,11 +54,12 @@ def change(*args):
 @input_error
 def phone(*args):
     name = args[0]
-    phone = ""
     record = address_book.search_user(name)
     if record:
-        if record.birthday:    
-            return name + ": " + ", ".join([phone.number for phone in record.phone_list] + "\ndays to birthday:" + str(record.days_to_birthday()))
+        result = name + ": " + ", ".join([phone.value for phone in record.phone_list]) 
+        if record.birthday:
+            result += "\ndays to birthday:" + str(record.days_to_birthday())
+        return result
     return "ERROR empty"
 
 @input_error
@@ -91,7 +91,7 @@ def parser(text:str):
     for cmd, kwds in COMMANDS.items():
         for kwd in kwds:
             if text.lower().startswith(kwd):                
-                data = text[len(kwd):].strip().split()            
+                data = text[len(kwd):].strip().split()
                 return cmd, data 
     return no_command, None
 

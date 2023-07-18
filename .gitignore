@@ -1,0 +1,7 @@
+*~
+\.DS_STORE
+build/
+*egg-info*
+*__pycache__/
+*.py[cod]
+*eggs*
