@@ -1,14 +1,14 @@
 from classes_hw6 import AddressBook, Name, Phone, Birthday, Record
 
 address_book = AddressBook()
+address_book_iterator = None
 
 
 def input_error(func):
-    def wrapper(*args, **kwargs):
-        argc = len(args)
+    def wrapper(*args):
         result = None
         try:
-            result = func(*args, **kwargs) 
+            result = func(*args) 
         except KeyError:
             print("Enter user name")
         except ValueError:
@@ -29,8 +29,8 @@ def hello(*args):
 def add(*args):
     name = args[0]
     number = args[1]
-    sz = len(args)
-    if sz == 3:
+    address_book_iterator = None # грохаем итератор, т.к. после добавления новой записи он станет не валидный.
+    if len(args) == 3:
         birthday = args[2]
         address_book.add_record(Record(Name(name), Phone(number), Birthday(birthday)))
         return f"Add success {name} {number} {birthday}"
@@ -55,11 +55,12 @@ def change(*args):
 @input_error
 def phone(*args):
     name = args[0]
-    phone = ""
     record = address_book.search_user(name)
     if record:
-        if record.birthday:    
-            return name + ": " + ", ".join([phone.number for phone in record.phone_list] + "\ndays to birthday:" + str(record.days_to_birthday()))
+        result = name + ": " + ", ".join([phone.value for phone in record.phone_list])
+        if record.birthday:
+            result += f"; {record.birthday.value.date()}" + "\ndays to birthday:" + str(record.days_to_birthday())
+        return result
     return "ERROR empty"
 
 @input_error
@@ -76,27 +77,44 @@ def good_bye(*args):
 def no_command(*args):
     return "Unknown command"
 
+@input_error
+def show_next(*args):
+    global address_book_iterator
+
+    #если итератор валидный - значит можно делать инкремент.
+    if address_book_iterator:
+        # после инкремента перезаписываем итератор, как результат работы.
+        # может стать и не валидным, если вышли за границы. 
+        address_book_iterator = next(address_book_iterator)
+    else:
+        # если не валидный - пересоздаём заново, чтобы итерироваться с начала. 
+        address_book_iterator = address_book.iterator()
+
+    # если итератор после инкремента всё ещё валидный, значит можно вернуть строкой.
+    if address_book_iterator:
+        return str(address_book_iterator)
+    return None
 
 
 COMMANDS = {
     hello: ("hello", "hi"),
     add: ("add", "+"),
-    change: ("change", "зміни"),
-    phone: ("phone"),
-    show_all: ("show all", ),
-    good_bye: ("exit", "close", "good bye", "end")
+    change: ("change", "edit"),
+    phone: ("phone", "user"),
+    show_all: ("show all", "all"),
+    good_bye: ("exit", "close", "end"),
+    show_next: ("next",)
 }
 
-def parser(text:str):
+def parser(text: str):
     for cmd, kwds in COMMANDS.items():
         for kwd in kwds:
-            if text.lower().startswith(kwd):                
-                data = text[len(kwd):].strip().split()            
+            if text.lower().startswith(kwd):
+                data = text[len(kwd):].strip().split()
                 return cmd, data 
     return no_command, None
 
 def main():
-    
     while True:
         user_input = input(">>>")
         command, args = parser(user_input)
@@ -104,8 +122,10 @@ def main():
             result = command(*args)
         else:
             result = command()
-        print(result)
+        
+        if result: print(result)
 
 ###############################################
 if __name__ == "__main__":
     main()
+   
