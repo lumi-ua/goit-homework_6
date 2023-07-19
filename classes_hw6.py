@@ -117,37 +117,36 @@ class Record:
 
 
 class AddressBookIterator:
-
-    def __init__(self, entries, page_size=10):
-        self.entries = entries
+   
+    def __init__(self, address_book:UserDict, page_size=10):
+        self.address_book = address_book
+        self.key_list = list(address_book.data.keys())
         self.page_size = page_size
         self.current_page = 0
 
     def __iter__(self):
         return self
 
+    def get_items(self)->list:
+        start_index = self.current_page * self.page_size
+        end_index = start_index + self.page_size
+
+        if start_index >= len(self.key_list):
+            return None
+
+        keys = self.key_list[start_index : end_index]
+        items = [self.address_book[i] for i in keys]
+        return items
+
     def __next__(self):
         self.current_page += 1
-        start_index = self.current_page * self.page_size
-        end_index = start_index + self.page_size
-
-        if start_index >= len(self.entries):
-            #raise StopIteration
-            return None # возвращаем None как признак того что достигли конца 
-
-        page_entries = self.entries[start_index : end_index]
-        return page_entries
+        return self.get_items()
 
     def __str__(self) -> str:
-        start_index = self.current_page * self.page_size
-        end_index = start_index + self.page_size
-
-        if start_index >= len(self.entries):
-            #raise StopIteration
-            return []
-
-        page_entries = self.entries[start_index : end_index]
-        return f'{page_entries}'
+        items = self.get_items()
+        if items:
+            return f'{items}'
+        return []
 
     def __repr__(self) -> str:
         return str(self)
@@ -173,4 +172,4 @@ class AddressBook(UserDict):
     # метод iterator, возвращает генератор по записям AddressBook и за одну итерацию 
     # возвращает представление для N записей.
     def iterator(self):
-        return AddressBookIterator(entries = list(self.data.values()), page_size = 10)
+        return AddressBookIterator(address_book=self, page_size = 10)
