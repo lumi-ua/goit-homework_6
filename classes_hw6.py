@@ -133,9 +133,9 @@ class AddressBookIterator:
 
         if start_index >= len(self.entries):
             #raise StopIteration
-            return None
+            return None # возвращаем None как признак того что достигли конца 
 
-        page_entries = self.entries[start_index:end_index]
+        page_entries = self.entries[start_index : end_index]
         return page_entries
 
     def __str__(self) -> str:
@@ -146,7 +146,7 @@ class AddressBookIterator:
             #raise StopIteration
             return []
 
-        page_entries = self.entries[start_index:min(len(self.entries), end_index)]
+        page_entries = self.entries[start_index : end_index]
         return f'{page_entries}'
 
     def __repr__(self) -> str:
