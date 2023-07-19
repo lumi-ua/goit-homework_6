@@ -58,7 +58,7 @@ def phone(*args):
     if record:
         result = name + ": " + ", ".join([phone.value for phone in record.phone_list])
         if record.birthday:
-            result += "\ndays to birthday:" + str(record.days_to_birthday())
+            result += f"; {record.birthday.value.date()}" + "\ndays to birthday:" + str(record.days_to_birthday())
         return result
     return "ERROR empty"
 
@@ -77,40 +77,21 @@ def no_command(*args):
     return "Unknown command"
 
 
-
 COMMANDS = {
     hello: ("hello", "hi"),
     add: ("add", "+"),
-    change: ("change", "зміни"),
-    phone: ("phone"),
-    show_all: ("show all", ),
-    good_bye: ("exit", "close", "good bye", "end")
+    change: ("change", "edit"),
+    phone: ("phone", "user"),
+    show_all: ("show", "all",),
+    good_bye: ("exit", "close", "end")
 }
 
-#def parser(text:str):
-#    for cmd, kwds in COMMANDS.items():
-#        for kwd in kwds:
-#            if text.lower().startswith(kwd):                
-#                data = text[len(kwd):].strip().split()
-#                return cmd, data 
-#    return no_command, None
-
-def parser(text: str): #-> tuple([callable, tuple([str]|None)]):
-    if text.lower().startswith("add"):
-        return add, text.lower().replace("add", "").strip().split()
-    if text.lower().startswith("hello"):
-        return hello, None
-    if text.lower().startswith("change"):
-        cmd = text.lower().replace("change", "")
-        return change, cmd.strip().split()
-    if text.lower().startswith("phone"):
-        cmd = text.lower().replace("phone", "")
-        return phone, cmd.strip().split()
-    if text.lower().startswith("show all"):
-        return show_all, None
-    if text.lower().startswith("good bye") or text.lower().startswith("exit") or text.lower().startswith("close"):
-        return good_bye, None 
-
+def parser(text: str):
+    for cmd, kwds in COMMANDS.items():
+        for kwd in kwds:
+            if text.lower().startswith(kwd):
+                data = text[len(kwd):].strip().split()
+                return cmd, data 
     return no_command, None
 
 def main():
