@@ -143,8 +143,8 @@ class AddressBook(UserDict):
             rec = self.data[record.name.value]
             rec.phone_list.extend(record.phone_list)
             
-            if record.birthday: rec.birthday = record.birthday
-            #rec.birthday.extend(record.birthday) # под вопросом правильность написания
+            if record.birthday:
+                rec.birthday = record.birthday
         else:
             self.data[record.name.value] = record
 

@@ -4,10 +4,10 @@ address_book = AddressBook()
 
 
 def input_error(func):
-    def wrapper(*args, **kwargs):
+    def wrapper(*args):
         result = None
         try:
-            result = func(*args, **kwargs) 
+            result = func(*args) 
         except KeyError:
             print("Enter user name")
         except ValueError:
@@ -82,7 +82,7 @@ COMMANDS = {
     add: ("add", "+"),
     change: ("change", "edit"),
     phone: ("phone", "user"),
-    show_all: ("show", "all",),
+    show_all: ("show all", "all"),
     good_bye: ("exit", "close", "end")
 }
 
@@ -95,7 +95,6 @@ def parser(text: str):
     return no_command, None
 
 def main():
-    
     while True:
         user_input = input(">>>")
         command, args = parser(user_input)
