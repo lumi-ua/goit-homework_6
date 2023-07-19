@@ -1,6 +1,7 @@
 from classes_hw6 import AddressBook, Name, Phone, Birthday, Record
 
 address_book = AddressBook()
+address_book_iterator = None
 
 
 def input_error(func):
@@ -28,8 +29,8 @@ def hello(*args):
 def add(*args):
     name = args[0]
     number = args[1]
-    sz = len(args)
-    if sz == 3:
+    address_book_iterator = None # грохаем итератор, т.к. после добавления новой записи он станет не валидный.
+    if len(args) == 3:
         birthday = args[2]
         address_book.add_record(Record(Name(name), Phone(number), Birthday(birthday)))
         return f"Add success {name} {number} {birthday}"
@@ -76,6 +77,18 @@ def good_bye(*args):
 def no_command(*args):
     return "Unknown command"
 
+@input_error
+def show_next(*args):
+    global address_book_iterator
+    if address_book_iterator:
+        address_book_iterator = next(address_book_iterator)
+    else:
+        address_book_iterator = address_book.iterator()
+
+    if address_book_iterator:
+        return str(address_book_iterator)
+    return None
+
 
 COMMANDS = {
     hello: ("hello", "hi"),
@@ -83,7 +96,8 @@ COMMANDS = {
     change: ("change", "edit"),
     phone: ("phone", "user"),
     show_all: ("show all", "all"),
-    good_bye: ("exit", "close", "end")
+    good_bye: ("exit", "close", "end"),
+    show_next: ("next",)
 }
 
 def parser(text: str):

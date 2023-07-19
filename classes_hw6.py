@@ -107,7 +107,10 @@ class Record:
     
 
     def __str__(self) -> str:
-        return f'{self.phone_list}'
+        if self.birthday:
+            return f'\n{self.name.value}: {self.phone_list}; {self.birthday.value.date()}'
+        else:
+            return f'\n{self.name.value}: {self.phone_list}'
 
     def __repr__(self) -> str:
         return str(self)
@@ -124,16 +127,30 @@ class AddressBookIterator:
         return self
 
     def __next__(self):
+        self.current_page += 1
         start_index = self.current_page * self.page_size
         end_index = start_index + self.page_size
 
         if start_index >= len(self.entries):
-            raise StopIteration
+            #raise StopIteration
+            return None
 
         page_entries = self.entries[start_index:end_index]
-        self.current_page += 1
-
         return page_entries
+
+    def __str__(self) -> str:
+        start_index = self.current_page * self.page_size
+        end_index = start_index + self.page_size
+
+        if start_index >= len(self.entries):
+            #raise StopIteration
+            return []
+
+        page_entries = self.entries[start_index:min(len(self.entries), end_index)]
+        return f'{page_entries}'
+
+    def __repr__(self) -> str:
+        return str(self)
 
 
 class AddressBook(UserDict):
@@ -152,13 +169,8 @@ class AddressBook(UserDict):
         if self.data.get(name):
             return self.data[name]
         return None
-
-    def __iter__(self):             
-        return self
     
     # метод iterator, возвращает генератор по записям AddressBook и за одну итерацию 
     # возвращает представление для N записей.
     def iterator(self):
-        return AddressBookIterator(entries = self.data, page_size = 10)
-
-
+        return AddressBookIterator(entries = list(self.data.values()), page_size = 10)
