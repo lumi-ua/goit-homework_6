@@ -48,6 +48,7 @@ def change(*args):
 
     record = address_book.search_user(name)
     if record:
+        address_book_iterator = None
         record.change_phone(Phone(phone_from), Phone(phone_to))
         return f"Change success {name} {number_from}->{number_to}"
     return f"Change error {name} {number_from}->{number_to}"
