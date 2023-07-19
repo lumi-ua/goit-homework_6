@@ -80,11 +80,17 @@ def no_command(*args):
 @input_error
 def show_next(*args):
     global address_book_iterator
+
+    #если итератор валидный - значит можно делать инкремент.
     if address_book_iterator:
+        # после инкремента перезаписываем итератор, как результат работы.
+        # может стать и не валидным, если вышли за границы. 
         address_book_iterator = next(address_book_iterator)
     else:
+        # если не валидный - пересоздаём заново, чтобы итерироваться с начала. 
         address_book_iterator = address_book.iterator()
 
+    # если итератор после инкремента всё ещё валидный, значит можно вернуть строкой.
     if address_book_iterator:
         return str(address_book_iterator)
     return None
