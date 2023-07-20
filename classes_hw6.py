@@ -83,6 +83,8 @@ class Record:
     def add_phone(self, phone: Phone):
         self.phone_list.append(phone)
         
+    def set_name(self, name_str: str):
+        self.name = Name(name_str)
 
     def change_phone(self, phone_from: Phone, phone_to: Phone):
         for idx, item in enumerate(self.phone_list):
@@ -135,7 +137,7 @@ class AddressBookIterator:
             return None
 
         keys = self.key_list[start_index : end_index]
-        items = [self.address_book[i] for i in keys]
+        items = [self.address_book[i] for i in keys if self.address_book.get(i)]
         return items
 
     def __next__(self):
@@ -163,6 +165,14 @@ class AddressBook(UserDict):
                 rec.birthday = record.birthday
         else:
             self.data[record.name.value] = record
+
+    def rename_record(self, from_name: str, to_name: str):
+        rec = self.data.pop(from_name)
+        if rec:
+            rec.set_name(to_name)
+            self.add_record(rec)
+            return True
+        return False
 
     def search_user(self, name: str) -> Record:
         if self.data.get(name):

@@ -98,6 +98,16 @@ def show_next(*args):
         return str(address_book_iterator)
     return None
 
+@input_error
+def rename(*args):
+    global address_book_iterator
+    if len(args) == 2:
+        if address_book.rename_record(args[0], args[1]):
+            address_book_iterator = None
+            return f'renamed from:{args[0]} to:{args[1]}'
+        else: return 'wrong {args[0]}'
+    return None
+
 
 COMMANDS = {
     hello: ("hello", "hi"),
@@ -106,7 +116,8 @@ COMMANDS = {
     phone: ("phone", "user"),
     show_all: ("show all", "all"),
     good_bye: ("exit", "close", "end"),
-    show_next: ("next",)
+    show_next: ("next",),
+    rename: ("rename",)
 }
 
 def parser(text: str):
