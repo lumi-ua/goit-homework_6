@@ -27,6 +27,7 @@ def hello(*args):
 
 @input_error
 def add(*args):
+    global address_book_iterator
     name = args[0]
     number = args[1]
     address_book_iterator = None # грохаем итератор, т.к. после добавления новой записи он станет не валидный.
@@ -40,6 +41,7 @@ def add(*args):
     
 @input_error
 def change(*args):
+    global address_book_iterator
     name = args[0]
     number_from = int(args[1])  #check if number, else generate exception
     number_to = int(args[2])    #check if number, else generate exception
