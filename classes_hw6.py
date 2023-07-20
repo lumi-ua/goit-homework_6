@@ -1,6 +1,8 @@
 from collections import UserDict
 from datetime import datetime, timedelta
 
+import itertools
+
 class Field:
 
     def __init__(self, value) -> None:
@@ -122,7 +124,6 @@ class AddressBookIterator:
    
     def __init__(self, address_book:UserDict, page_size=10):
         self.address_book = address_book
-        self.key_list = list(address_book.data.keys())
         self.page_size = page_size
         self.current_page = 0
 
@@ -136,8 +137,8 @@ class AddressBookIterator:
         if start_index >= len(self.key_list):
             return None
 
-        keys = self.key_list[start_index : end_index]
-        items = [self.address_book[i] for i in keys if self.address_book.get(i)]
+        items = list(itertools.islice(self.address_book.values(), start_index, end_index))
+
         return items
 
     def __next__(self):
