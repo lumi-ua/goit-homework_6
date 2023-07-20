@@ -27,6 +27,7 @@ def hello(*args):
 
 @input_error
 def add(*args):
+    global address_book_iterator
     name = args[0]
     number = args[1]
     address_book_iterator = None # грохаем итератор, т.к. после добавления новой записи он станет не валидный.
@@ -40,6 +41,7 @@ def add(*args):
     
 @input_error
 def change(*args):
+    global address_book_iterator
     name = args[0]
     number_from = int(args[1])  #check if number, else generate exception
     number_to = int(args[2])    #check if number, else generate exception
@@ -96,6 +98,16 @@ def show_next(*args):
         return str(address_book_iterator)
     return None
 
+@input_error
+def rename(*args):
+    global address_book_iterator
+    if len(args) == 2:
+        if address_book.rename_record(args[0], args[1]):
+            address_book_iterator = None
+            return f'renamed from:{args[0]} to:{args[1]}'
+        else: return 'wrong username:{args[0]}'
+    return None
+
 
 COMMANDS = {
     hello: ("hello", "hi"),
@@ -104,7 +116,8 @@ COMMANDS = {
     phone: ("phone", "user"),
     show_all: ("show all", "all"),
     good_bye: ("exit", "close", "end"),
-    show_next: ("next",)
+    show_next: ("next",),
+    rename: ("rename",)
 }
 
 def parser(text: str):
