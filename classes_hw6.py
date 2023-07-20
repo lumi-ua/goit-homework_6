@@ -134,7 +134,7 @@ class AddressBookIterator:
         start_index = self.current_page * self.page_size
         end_index = start_index + self.page_size
 
-        if start_index >= len(self.key_list):
+        if start_index >= len(self.address_book.values()):
             return None
 
         items = list(itertools.islice(self.address_book.values(), start_index, end_index))
