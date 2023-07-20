@@ -105,7 +105,7 @@ def rename(*args):
         if address_book.rename_record(args[0], args[1]):
             address_book_iterator = None
             return f'renamed from:{args[0]} to:{args[1]}'
-        else: return 'wrong {args[0]}'
+        else: return 'wrong username:{args[0]}'
     return None
 
 
