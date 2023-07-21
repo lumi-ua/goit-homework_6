@@ -14,7 +14,7 @@ class Field:
         return self.__value
 
     @value.setter
-    def value(self, var):
+    def value(self, value):
         self.__value = value
     
     def __str__(self) -> str:
@@ -59,7 +59,7 @@ class Birthday(Field):
             raise ValueError("Invalid birthday range!")
         else:
             #Field.value = dtv
-            self.__value = dyv
+            self.__value = dtv
             # super(Birthday, self.__class__).value.fset(self, dtv)
 
         if dtv > datetime.now():
