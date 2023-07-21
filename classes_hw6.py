@@ -84,7 +84,7 @@ class Record:
 
     def change_phone(self, phone_from: Phone, phone_to: Phone):
         for idx, item in enumerate(self.phone_list):
-            if phone_from.number == item.number:
+            if phone_from.value == item.value:
                 self.phone_list[idx] = phone_to
                 return f"old phone {phone_from} change to {phone_to}"
         return f"{phone_from} not present in phones of contact {self.name}"
