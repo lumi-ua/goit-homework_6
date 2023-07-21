@@ -5,8 +5,9 @@ import itertools
 
 class Field:
 
-    def __init__(self, value) -> None:
-        self._value = value
+    def __init__(self, var) -> None:
+        self._value = None
+        self.value = var
 
     @property
     def value(self):
@@ -28,9 +29,6 @@ class Name(Field):
 
 class Phone(Field):
 
-    def __init__(self, var) -> None:
-        self.value = var
-
     @property
     def value(self):
         return super().value
@@ -45,9 +43,6 @@ class Phone(Field):
 
 
 class Birthday(Field):
-
-    def __init__(self, var) -> None:
-        self.value = var
 
     @property
     def value(self):
