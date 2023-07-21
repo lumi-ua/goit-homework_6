@@ -6,19 +6,19 @@ import itertools
 class Field:
 
     def __init__(self, var) -> None:
-        self._value = None
+        self.__value = None
         self.value = var
 
     @property
     def value(self):
-        return self._value
+        return self.__value
 
     @value.setter
     def value(self, var):
-        self._value = var
+        self.__value = var
     
     def __str__(self) -> str:
-        return self._value
+        return self.__value
     
     def __repr__(self) -> str:
         return str(self)
