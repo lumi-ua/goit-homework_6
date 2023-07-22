@@ -60,10 +60,7 @@ def phone(*args):
     name = args[0]
     record = address_book.search_user(name)
     if record:
-        result = name + ": " + ", ".join([phone.value for phone in record.phone_list])
-        if record.birthday:
-            result += f"; {record.birthday.value.date()}" + "\ndays to birthday:" + str(record.days_to_birthday())
-        return result
+        return str(record)
     return "ERROR empty"
 
 @input_error

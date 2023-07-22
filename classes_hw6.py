@@ -108,10 +108,10 @@ class Record:
     
 
     def __str__(self) -> str:
+        result = f'{self.name.value}: ' + ", ".join([phone.value for phone in self.phone_list])
         if self.birthday:
-            return f'\n{self.name.value}: {self.phone_list}; {self.birthday.value.date()}'
-        else:
-            return f'\n{self.name.value}: {self.phone_list}'
+            result += f'; {self.birthday.value.date()}' + "\ndays to birthday: " + str(self.days_to_birthday())
+        return result
 
     def __repr__(self) -> str:
         return str(self)
