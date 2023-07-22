@@ -5,7 +5,7 @@ import itertools
 
 class Field:
 
-    def __init__(self, value) -> None:
+    def __init__(self, value=None) -> None:
         self.__value = None
         self.value = value
 
@@ -14,11 +14,11 @@ class Field:
         return self.__value
 
     @value.setter
-    def value(self, value):
-        self.__value = value
+    def value(self, value: str):
+        if value: self.__value = value
     
     def __str__(self) -> str:
-        return self.__value
+        return self.value
     
     def __repr__(self) -> str:
         return str(self)
@@ -32,12 +32,12 @@ class Phone(Field):
 
     @property
     def value(self):
-        return super().value
+        return self.__value
 
     @value.setter
-    def value(self, value):
-        if (len(value) == 12) and value.isnumeric():            
-            super(Phone, Phone).value.fset(self, value)
+    def value(self, value: str):
+        if (len(value) == 12) and value.isnumeric(): 
+            self.__value = value
         else:
             raise ValueError(f"{value} is an invalid mobile number")
 
@@ -47,22 +47,21 @@ class Birthday(Field):
     @property
     def value(self):
         #return Field.value
-        return super().value
+        return self.__value
 
     @value.setter
-    def value(self, value):
+    def value(self, value: str):
         dtv = datetime.strptime(value, "%d.%m.%Y")
         current_year = datetime.now().year
         if dtv.year > current_year or dtv.year < current_year - 120:
             raise ValueError("Invalid birthday range!")
         else:
-            super(Birthday, Birthday).value.fset(self, dtv)
-
+            self.__value = dtv
+            
         if dtv > datetime.now():
             raise ValueError("Invalid birthday!")
         else:
-            super(Birthday, Birthday).value.fset(self, dtv)
-
+            self.__value = dtv
 
 class Record:
 
