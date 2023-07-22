@@ -32,13 +32,11 @@ class Phone(Field):
 
     @property
     def value(self):
-        return self.__value
+        return super().value
 
     @value.setter
     def value(self, value):
-        if (len(value) == 12) and value.isnumeric():
-            #Field.value = var
-            #self.__value = value
+        if (len(value) == 12) and value.isnumeric():            
             super(Phone, Phone).value.fset(self, value)
         else:
             raise ValueError(f"{value} is an invalid mobile number")
@@ -49,7 +47,7 @@ class Birthday(Field):
     @property
     def value(self):
         #return Field.value
-        return self.__value
+        return super().value
 
     @value.setter
     def value(self, value):
@@ -58,15 +56,11 @@ class Birthday(Field):
         if dtv.year > current_year or dtv.year < current_year - 120:
             raise ValueError("Invalid birthday range!")
         else:
-            #Field.value = dtv
-            #self.__value = dtv
             super(Birthday, Birthday).value.fset(self, dtv)
 
         if dtv > datetime.now():
             raise ValueError("Invalid birthday!")
         else:
-            #Field.value = dtv
-            #self.__value = dtv
             super(Birthday, Birthday).value.fset(self, dtv)
 
 
