@@ -38,8 +38,8 @@ class Phone(Field):
     def value(self, value):
         if (len(value) == 12) and value.isnumeric():
             #Field.value = var
-            self.__value = value
-            # super(Phone, self.__class__).value.fset(self, var)
+            #self.__value = value
+            super(Phone, Phone).value.fset(self, value)
         else:
             raise ValueError(f"{value} is an invalid mobile number")
 
@@ -59,15 +59,15 @@ class Birthday(Field):
             raise ValueError("Invalid birthday range!")
         else:
             #Field.value = dtv
-            self.__value = dtv
-            # super(Birthday, self.__class__).value.fset(self, dtv)
+            #self.__value = dtv
+            super(Birthday, Birthday).value.fset(self, dtv)
 
         if dtv > datetime.now():
             raise ValueError("Invalid birthday!")
         else:
             #Field.value = dtv
-            self.__value = dtv
-            # super(Birthday, self.__class__).value.fset(self, dtv)
+            #self.__value = dtv
+            super(Birthday, Birthday).value.fset(self, dtv)
 
 
 class Record:
@@ -108,10 +108,10 @@ class Record:
     
 
     def __str__(self) -> str:
+        result = f'{self.name.value}: ' + ", ".join([phone.value for phone in self.phone_list])
         if self.birthday:
-            return f'\n{self.name.value}: {self.phone_list}; {self.birthday.value.date()}'
-        else:
-            return f'\n{self.name.value}: {self.phone_list}'
+            result += f'; {self.birthday.value.date()}' + "\ndays to birthday: " + str(self.days_to_birthday())
+        return result
 
     def __repr__(self) -> str:
         return str(self)
