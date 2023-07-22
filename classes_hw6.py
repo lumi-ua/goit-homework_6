@@ -5,17 +5,17 @@ import itertools
 
 class Field:
 
-    def __init__(self, var) -> None:
+    def __init__(self, value) -> None:
         self.__value = None
-        self.value = var
+        self.value = value
 
     @property
     def value(self):
         return self.__value
 
     @value.setter
-    def value(self, var):
-        self.__value = var
+    def value(self, value):
+        self.__value = value
     
     def __str__(self) -> str:
         return self.__value
@@ -32,15 +32,16 @@ class Phone(Field):
 
     @property
     def value(self):
-        return super().value
+        return self.__value
 
     @value.setter
-    def value(self, var):
-        if (len(var) == 12) and var.isnumeric():
+    def value(self, value):
+        if (len(value) == 12) and value.isnumeric():
             #Field.value = var
-            super(Phone, self.__class__).value.fset(self, var)
+            self.__value = value
+            # super(Phone, self.__class__).value.fset(self, var)
         else:
-            raise ValueError(f"{var} is an invalid mobile number")
+            raise ValueError(f"{value} is an invalid mobile number")
 
 
 class Birthday(Field):
@@ -48,23 +49,25 @@ class Birthday(Field):
     @property
     def value(self):
         #return Field.value
-        return super().value
+        return self.__value
 
     @value.setter
-    def value(self, var):
-        dtv = datetime.strptime(var, "%d.%m.%Y")
+    def value(self, value):
+        dtv = datetime.strptime(value, "%d.%m.%Y")
         current_year = datetime.now().year
         if dtv.year > current_year or dtv.year < current_year - 120:
             raise ValueError("Invalid birthday range!")
         else:
             #Field.value = dtv
-            super(Birthday, self.__class__).value.fset(self, dtv)
+            self.__value = dtv
+            # super(Birthday, self.__class__).value.fset(self, dtv)
 
         if dtv > datetime.now():
             raise ValueError("Invalid birthday!")
         else:
             #Field.value = dtv
-            super(Birthday, self.__class__).value.fset(self, dtv)
+            self.__value = dtv
+            # super(Birthday, self.__class__).value.fset(self, dtv)
 
 
 class Record:
@@ -84,7 +87,7 @@ class Record:
 
     def change_phone(self, phone_from: Phone, phone_to: Phone):
         for idx, item in enumerate(self.phone_list):
-            if phone_from.number == item.number:
+            if phone_from.value == item.value:
                 self.phone_list[idx] = phone_to
                 return f"old phone {phone_from} change to {phone_to}"
         return f"{phone_from} not present in phones of contact {self.name}"
