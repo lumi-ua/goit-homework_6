@@ -32,7 +32,7 @@ class Phone(Field):
 
     @property
     def value(self):
-        return super().value
+        return self.__value
 
     @value.setter
     def value(self, value):
@@ -49,7 +49,7 @@ class Birthday(Field):
     @property
     def value(self):
         #return Field.value
-        return super().value
+        return self.__value
 
     @value.setter
     def value(self, value):
